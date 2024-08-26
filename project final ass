@@ -1,0 +1,125 @@
+Question 1: Use yfinance to Extract Stock Data
+Using the Ticker function enter the ticker symbol of the stock we want to extract data on to create a ticker object. The stock is Tesla and its ticker symbol is TSLA.
+
+Tesla = yf.Ticker("TSLA")
+Using the ticker object and the function history extract stock information and save it in a dataframe named tesla_data. Set the period parameter to "max" so we get information for the maximum amount of time.
+
+tesla_data = Tesla.history(period="max")
+Reset the index using the reset_index(inplace=True) function on the tesla_data DataFrame and display the first five rows of the tesla_data dataframe using the head function. Take a screenshot of the results and code from the beginning of Question 1 to the results below.
+
+tesla_data.reset_index(inplace=True)
+
+tesla_data.head()
+Date	Open	High	Low	Close	Volume	Dividends	Stock Splits
+0	2010-06-29 00:00:00-04:00	1.266667	1.666667	1.169333	1.592667	281494500	0.0	0.0
+1	2010-06-30 00:00:00-04:00	1.719333	2.028000	1.553333	1.588667	257806500	0.0	0.0
+2	2010-07-01 00:00:00-04:00	1.666667	1.728000	1.351333	1.464000	123282000	0.0	0.0
+3	2010-07-02 00:00:00-04:00	1.533333	1.540000	1.247333	1.280000	77097000	0.0	0.0
+4	2010-07-06 00:00:00-04:00	1.333333	1.333333	1.055333	1.074000	103003500	0.0	0.0
+Question 2: Use Webscraping to Extract Tesla Revenue Data
+Use the requests library to download the webpage https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-PY0220EN-SkillsNetwork/labs/project/revenue.htm Save the text of the response as a variable named html_data.
+
+url = "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-PY0220EN-SkillsNetwork/labs/project/revenue.htm"
+
+response = requests.get(url)
+html_data = response.text
+Parse the html data using beautiful_soup using parser i.e html5lib or html.parser. Make sure to use the html_data with the content parameter as follow html_data.content .
+
+soup = BeautifulSoup(html_data, 'html.parser')
+Using BeautifulSoup or the read_html function extract the table with Tesla Revenue and store it into a dataframe named tesla_revenue. The dataframe should have columns Date and Revenue.
+
+Step-by-step instructions
+Click here if you need help locating the table
+soup.find_all("tbody")[1]
+
+tesla_revenue = pd.DataFrame(columns=["Date", "Revenue"])
+for row in soup.find("tbody").find_all('tr'):
+    col = row.find_all("td")
+    date = col[0].text
+    Revenue = col[1].text
+    
+    tesla_revenue = pd.concat([tesla_revenue,pd.DataFrame({"Date":[date], "Revenue":[Revenue]})], ignore_index=True) 
+             
+Execute the following line to remove the comma and dollar sign from the Revenue column.
+
+tesla_revenue["Revenue"] = tesla_revenue['Revenue'].str.replace(',|\$',"", regex=True)
+Execute the following lines to remove an null or empty strings in the Revenue column.
+
+tesla_revenue.dropna(inplace=True)
+
+tesla_revenue = tesla_revenue[tesla_revenue['Revenue'] != ""]
+Display the last 5 row of the tesla_revenue dataframe using the tail function. Take a screenshot of the results.
+
+print (tesla_revenue.tail())
+    Date Revenue
+8   2013    2013
+9   2012     413
+10  2011     204
+11  2010     117
+12  2009     112
+Question 3: Use yfinance to Extract Stock Data
+Using the Ticker function enter the ticker symbol of the stock we want to extract data on to create a ticker object. The stock is GameStop and its ticker symbol is GME.
+
+GameStop = yf.Ticker("GME")
+Using the ticker object and the function history extract stock information and save it in a dataframe named gme_data. Set the period parameter to "max" so we get information for the maximum amount of time.
+
+gme_data = GameStop.history(period="max")
+Reset the index using the reset_index(inplace=True) function on the gme_data DataFrame and display the first five rows of the gme_data dataframe using the head function. Take a screenshot of the results and code from the beginning of Question 3 to the results below.
+
+gme_data.reset_index(inplace=True)
+
+gme_data.head()
+Date	Open	High	Low	Close	Volume	Dividends	Stock Splits
+0	2002-02-13 00:00:00-05:00	1.620128	1.693350	1.603296	1.691667	76216000	0.0	0.0
+1	2002-02-14 00:00:00-05:00	1.712707	1.716074	1.670626	1.683250	11021600	0.0	0.0
+2	2002-02-15 00:00:00-05:00	1.683250	1.687458	1.658002	1.674834	8389600	0.0	0.0
+3	2002-02-19 00:00:00-05:00	1.666418	1.666418	1.578047	1.607504	7410400	0.0	0.0
+4	2002-02-20 00:00:00-05:00	1.615921	1.662210	1.603296	1.662210	6892800	0.0	0.0
+Question 4: Use Webscraping to Extract GME Revenue Data
+Use the requests library to download the webpage https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-PY0220EN-SkillsNetwork/labs/project/stock.html. Save the text of the response as a variable named html_data_2.
+
+Parse the html data using beautiful_soup using parser i.e html5lib or html.parser.
+
+soup = BeautifulSoup(html_data_2, 'html.parser')
+Using BeautifulSoup or the read_html function extract the table with GameStop Revenue and store it into a dataframe named gme_revenue. The dataframe should have columns Date and Revenue. Make sure the comma and dollar sign is removed from the Revenue column.
+
+Note: Use the method similar to what you did in question 2.
+
+Click here if you need help locating the table
+soup.find_all("tbody")[1]
+
+gme_revenue = pd.DataFrame(columns=["Date", "Revenue"])
+
+for row in soup.find("tbody").find_all('tr'):
+    col = row.find_all("td")
+    date = col[0].text
+    Revenue = col[1].text
+    
+    gme_revenue = pd.concat([gme_revenue,pd.DataFrame({"Date":[date], "Revenue":[Revenue]})], ignore_index=True)   
+Display the last five rows of the gme_revenue dataframe using the tail function. Take a screenshot of the results.
+
+gme_revenue.tail()
+Date	Revenue
+11	2009	$8,806
+12	2008	$7,094
+13	2007	$5,319
+14	2006	$3,092
+15	2005	$1,843
+
+
+
+
+
+
+Question 5: Plot Tesla Stock Graph
+Use the make_graph function to graph the Tesla Stock Data, also provide a title for the graph. Note the graph will only show data upto June 2021.
+
+Hint
+make_graph(tesla_data,tesla_revenue,'Tesla')
+
+Question 6: Plot GameStop Stock Graph
+Use the make_graph function to graph the GameStop Stock Data, also provide a title for the graph. The structure to call the make_graph function is make_graph(gme_data, gme_revenue, 'GameStop'). Note the graph will only show data upto June 2021.
+
+Hint
+
+You just need to invoke the make_graph function with the required parameter to print the graphs.The structure to call the `make_graph` function is `make_graph(gme_data, gme_revenue, 'GameStop')`
